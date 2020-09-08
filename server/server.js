@@ -6,12 +6,19 @@ const io = require('socket.io')(server);
 
 io.on("connection", (socket) => {
   console.log("New client connected");
-  socket.emit('user', );
+
+  socket.on('user', (name, email, username) => {
+    socket.send(username);
+    console.log(name);
+    console.log(email);
+    console.log(username);
+  })
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
 });
+
 
 const getApiAndEmit = socket => {
   const response = new Date();
