@@ -2,6 +2,7 @@ import React from 'react';
 import { withAuth0 } from '@auth0/auth0-react';
 
 import NavBar from '../components/navBar';
+import UsersList from '../components/usersList';
 
 class Home extends React.Component {
 
@@ -19,9 +20,8 @@ class Home extends React.Component {
     }
     return (
       isAuthenticated && <>
-        <>
-          <NavBar></NavBar>
-        </>
+        <NavBar></NavBar>
+        <UsersList></UsersList>
       </>
     );
   }
