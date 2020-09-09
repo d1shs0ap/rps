@@ -26,11 +26,14 @@ io.on("connection", (socket) => {
       // Sends everyone the updated list
       io.in('lobby').emit('updated users', users);
     });
-    
 
     // console.log(name);
     // console.log(email);
     // console.log(username);
+  })
+
+  socket.on('challenge', (username) => {
+    
   })
 
   socket.on("disconnect", () => {
