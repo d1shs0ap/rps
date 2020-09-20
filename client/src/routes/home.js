@@ -3,6 +3,8 @@ import { withAuth0 } from '@auth0/auth0-react';
 
 import NavBar from '../components/navBar';
 import UsersList from '../components/usersList';
+import ChallengeNotif from '../components/challengeNotif';
+import StartGame from '../components/startGame';
 
 class Home extends React.Component {
 
@@ -22,6 +24,8 @@ class Home extends React.Component {
       isAuthenticated && <>
         <NavBar></NavBar>
         <UsersList></UsersList>
+        <ChallengeNotif></ChallengeNotif>
+        <StartGame></StartGame>
       </>
     );
   }

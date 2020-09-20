@@ -1,4 +1,6 @@
 import React from 'react';
+import { withAuth0 } from '@auth0/auth0-react';
+
 import { Button } from 'antd';
 import socket from '../api/socket';
 
@@ -8,14 +10,19 @@ class ChallengeButton extends React.Component {
     super(props)
   }
 
+  // challenges user
   challengeUser() {
-    socket.emit('challenge', this.props.username);
+    const { user } = this.props.auth0;
+    const curUsername = user['https://matthewyng.com/username'];
+
+    socket.emit('challenge', this.props.username, curUsername);
     console.log('Challenged', this.props.username);
   }
 
   render() {
+    
     return <Button onClick={() => this.challengeUser()}>Challenge</Button>
   }
 }
 
-export default ChallengeButton;
+export default withAuth0(ChallengeButton);
