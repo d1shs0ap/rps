@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 
-import LogoutButton from './logoutButton';
+import LogoutButton from './buttons/logoutButton';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const NavBar = () => {

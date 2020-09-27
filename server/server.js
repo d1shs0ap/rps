@@ -5,6 +5,8 @@ const io = require('socket.io')(server);
 
 const { v4: uuidv4 } = require('uuid');
 
+let readied = 0;
+let timestamps = [];
 
 io.on("connection", (socket) => {
   console.log("New client connected");
@@ -44,7 +46,7 @@ io.on("connection", (socket) => {
           socket.to(client).emit('accept challenge', curUsername);
           break;
         }
-      }    
+      }
     });
   })
 
@@ -60,23 +62,62 @@ io.on("connection", (socket) => {
           // uuidv4
           const uuid = uuidv4();
 
-          socket.leave('lobby');
-          socket.join(uuid);
+          //leave lobby and join game for both users
+          socket.leave('lobby', () => {
+            socket.join(uuid, () => {
+              clientSocket.leave('lobby', () => {
+                clientSocket.join(uuid, () => {
 
-          clientSocket.leave('lobby');
-          clientSocket.join(uuid);
+                  // Get a list of all clients
+                  io.of('/').in('lobby').clients((error, clients) => {
+                    if (error) throw error;
+                    
+                    // Gets a list of all usernames based on client id and the username-id binding from before
+                    let users = clients.map((value) => {
+                      return io.of('/').in('lobby').connected[value].username;
+                    });
 
-          io.in(uuid).emit('start game', uuid, username, curUsername);
-          break;
-        }
+                    
+                    // Sends everyone the updated list
+                    io.in('lobby').emit('updated users', users);
+                  });
+
+                  // signal for game to start
+                  io.to(uuid).emit('start game', uuid, username, curUsername);
+                });
+              });
+            });
+          });
+        };
       }    
     });
   })
 
 
+  //when both players have connected to rooms
+  socket.on('ready', (uuid) => {
+    io.of('/').in(uuid).clients((error, clients) => {
+      if (error) throw error;
+      if (clients.length >= 2 && readied == 0){
+        const startTime = new Date();
+        io.to(uuid).emit('readied', startTime.getTime());
+        readied += 1
+        setTimeout(()=> {
+          readied = 0
+        }, 1000);
+      }
+    })
+  })
+
+  //update rps hand
+  socket.on('give hand', (hand, uuid) => {
+    socket.to(uuid).emit('receive hand', hand);
+  })
+
 
   socket.on("disconnect", () => {
     console.log('Client disconnected')
+    
     // Get a list of all clients
     io.of('/').in('lobby').clients((error, clients) => {
       if (error) throw error;

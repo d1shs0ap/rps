@@ -25,7 +25,7 @@ class StartGame extends React.Component {
 
   render(){
     if(this.state.gameStarted) {
-      return <Redirect to={`/game/${this.state.gameId}`}></Redirect>
+      return <Redirect to={`/room/${this.state.gameId}`}></Redirect>
     }
     return (null);
   }

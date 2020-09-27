@@ -1,6 +1,6 @@
 import React from 'react';
 import { List } from 'antd';
-import ChallengeButton from '../components/challengeButton';
+import ChallengeButton from '../components/buttons/challengeButton';
 
 import { withAuth0 } from '@auth0/auth0-react';
 import socket from '../api/socket';

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Button, Row} from 'antd';
+import { withRouter } from 'react-router-dom';
+import { Progress, Row} from 'antd';
 import { withAuth0 } from '@auth0/auth0-react';
 
-import RPSButton from '../components/rpsButton';
-import RPSOpponentButton from '../components/rpsOpponentButton';
+import RPSButton from './buttons/rpsButton';
+import RPSOpponentButton from './buttons/rpsOpponentButton';
+import Timer from './timer';
 
 import rock from '../rock.png';
 import paper from '../paper.png';
@@ -17,11 +19,37 @@ class Game extends React.Component {
     this.state = {
       currentHand: 'rock',
       opponentHand: 'rock',
+      progress: 0,
+      uuid: this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf('/') + 1),
     }
   }
 
   componentDidMount() {
-    // socket.on()
+    socket.emit('ready', this.state.uuid);
+
+    socket.on('readied', (startTime) => {
+      console.log(startTime)
+
+      const progressBar = setInterval(() => {
+        if(this.state.progress > 100){
+          
+          clearInterval(progressBar);
+        }
+        this.setState({
+          progress: (new Date().getTime() - startTime)/8000*100,
+        })
+      }, 1000);
+    })
+
+    socket.on('receive hand', (hand) => {
+      this.setState({
+        opponentHand: hand,
+      })
+    });
+  }
+
+  componentDidUpdate() {
+    console.log(this.state.progress)
   }
 
   isWinning() {
@@ -66,28 +94,30 @@ class Game extends React.Component {
   pageColor(){
     const win = this.isWinning()
     if(win==='yes'){
-      return '#96E196';
+      return { height: '100vh', background: '#96E196' };
     } else if(win==='no'){
-      return '#E19696';
+      return { height: '100vh', background: '#E19696' };
     } else if (win==='tie'){
-      return '#E1DB96';
+      return { height: '100vh', background: '#E1DB96' };
     }
   }
 
   handleClick(hand){
-
-
     this.setState(
       {
         currentHand : hand,
       }
     )
-    socket.emit('updateHand', this.props.username);
+
+    socket.emit('give hand', hand, this.state.uuid);
   }
 
   render () {
-    return <div style={{ height: '100vh', background: this.pageColor() }}>
-      <Row justify='center' style={{'padding': '120px'}}>
+    return <div style={this.pageColor()}>
+      <Row justify='center' style={{'padding': '60px', 'marginLeft': '70px', 'marginRight':'70px'}}>
+        <Progress percent={this.state.progress} showInfo={false}></Progress>
+      </Row>
+      <Row justify='center' style={{'padding': '50px'}}>
         <RPSOpponentButton 
           hand='rock' 
           opponentHand={this.state.opponentHand} 
@@ -127,4 +157,4 @@ class Game extends React.Component {
   }
 }
 
-export default withAuth0(Game);
+export default withRouter(withAuth0(Game));
