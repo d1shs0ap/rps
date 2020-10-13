@@ -1,19 +1,28 @@
 import React from 'react';
 
-import Game from '../components/game';
+import Game from '../components/game/game';
+import GameOver from '../components/game/gameOver';
 
 
 class Room extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      gameState: 'ready',
-      timer: null,
+      gameState: 'in game',
     };
   }
 
+  changeGameState(gameState){
+    this.setState({
+      gameState
+    })
+  }
+
   render(){
-    return <Game></Game>;
+    if(this.state.gameState=='in game'){
+      return <Game changeGameState={(gameState) => this.changeGameState(gameState)}></Game>;
+    } 
+    return <GameOver></GameOver>
   }
 }
 

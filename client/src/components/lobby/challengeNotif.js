@@ -2,7 +2,7 @@ import React from 'react';
 import { withAuth0 } from '@auth0/auth0-react';
 import { Button, notification } from 'antd';
 
-import socket from '../api/socket';
+import socket from '../../socket';
 
 
 class ChallengeNotif extends React.Component {

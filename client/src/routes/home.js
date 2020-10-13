@@ -1,11 +1,11 @@
 import React from 'react';
-import { messsage, message } from 'antd';
+import { message } from 'antd';
 import { withAuth0 } from '@auth0/auth0-react';
 
-import NavBar from '../components/navBar';
-import UsersList from '../components/usersList';
-import ChallengeNotif from '../components/challengeNotif';
-import StartGame from '../components/startGame';
+import NavBar from '../components/lobby/navBar';
+import UsersList from '../components/lobby/usersList';
+import ChallengeNotif from '../components/lobby/challengeNotif';
+import StartGame from '../components/lobby/startGame';
 
 class Home extends React.Component {
 

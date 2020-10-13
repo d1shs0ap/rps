@@ -1,17 +1,16 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Progress, Row} from 'antd';
+import { Progress, Row } from 'antd';
 import { withAuth0 } from '@auth0/auth0-react';
 
-import RPSButton from './buttons/rpsButton';
-import RPSOpponentButton from './buttons/rpsOpponentButton';
-import Timer from './timer';
+import RPSButton from '../buttons/rpsButton';
+import RPSOpponentButton from '../buttons/rpsOpponentButton';
 
-import rock from '../rock.png';
-import paper from '../paper.png';
-import scissors from '../scissors.png';
+import rock from './rock.png';
+import paper from './paper.png';
+import scissors from './scissors.png';
 
-import socket from '../api/socket';
+import socket from '../../socket';
 
 class Game extends React.Component {
   constructor(props){
@@ -49,7 +48,9 @@ class Game extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state.progress)
+    if(this.state.progress>=100){
+      this.props.changeGameState('game over');
+    }
   }
 
   isWinning() {

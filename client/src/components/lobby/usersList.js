@@ -1,9 +1,9 @@
 import React from 'react';
 import { List } from 'antd';
-import ChallengeButton from '../components/buttons/challengeButton';
+import ChallengeButton from '..//buttons/challengeButton';
 
 import { withAuth0 } from '@auth0/auth0-react';
-import socket from '../api/socket';
+import socket from '../../socket';
 
 
 class UsersList extends React.Component {
