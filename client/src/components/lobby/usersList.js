@@ -9,14 +9,14 @@ import socket from '../../socket';
 class UsersList extends React.Component {
   constructor(props){
     super(props);
-    this.state = { users: [] };
+    this.state = { 
+      users: [] 
+    };
   }
 
   updateUsers(newUsers, curUsername){
-    const curIndex = newUsers.indexOf(curUsername);
-    newUsers.splice(curIndex, 1);
     this.setState({
-      users: newUsers,
+      users: newUsers.filter(e => e !== curUsername),
     });
   }
 
@@ -33,7 +33,6 @@ class UsersList extends React.Component {
 
       socket.on('updated users', users => {
         this.updateUsers(users, curUsername);
-        console.log(this.state.users);
       });
 
     }

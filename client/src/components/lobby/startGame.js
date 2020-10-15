@@ -13,7 +13,7 @@ class StartGame extends React.Component {
   }
 
   componentDidMount() {
-    socket.on('start game', (uuid, username, curUsername) => {
+    socket.on('start game', (uuid) => {
       console.log('started game');
       this.setState({
         gameStarted: true,

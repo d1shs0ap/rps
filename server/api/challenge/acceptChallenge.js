@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const Game = require('../../models/game');
 
 module.exports = (io, socket) => {
   // After user accepted, start game
@@ -11,6 +12,13 @@ module.exports = (io, socket) => {
         if (clientSocket.username === username){
           // uuidv4
           const uuid = uuidv4();
+          
+          //create new game entry in mongodb
+          const newGame = new Game({ uuid: uuid });
+          newGame.save((err, newGame) => {
+            if (err) return console.error(err);
+            newGame.show();
+          })
 
           //leave lobby and join game for both users
           socket.leave('lobby', () => {

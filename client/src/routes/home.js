@@ -12,7 +12,6 @@ class Home extends React.Component {
   constructor() {
     super();
     this.state = {
-      users: [],
       loadingButton: null,
     }
   }

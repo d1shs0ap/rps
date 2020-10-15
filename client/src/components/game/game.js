@@ -15,29 +15,50 @@ import socket from '../../socket';
 class Game extends React.Component {
   constructor(props){
     super(props);
+
     this.state = {
       currentHand: 'rock',
       opponentHand: 'rock',
       progress: 0,
       uuid: this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf('/') + 1),
+      startedCounter: 0,
+      username: '',
     }
   }
 
   componentDidMount() {
     socket.emit('ready', this.state.uuid);
+    const { user, isAuthenticated } = this.props.auth0;
+    if(isAuthenticated){
+      const username = user['https://matthewyng.com/username'];
+      this.setState({
+        username: username,
+      })
+    }
 
+    // handles the shared starting time for progress bar
     socket.on('readied', (startTime) => {
-      console.log(startTime)
+      if (this.state.startedCounter == 1){
+        console.log(startTime)
 
-      const progressBar = setInterval(() => {
-        if(this.state.progress > 100){
+        socket.emit('confirmed start time', this.state.uuid, startTime);
+
+        const progressBar = setInterval(() => {
+          // change scene to page if we're done
+          if(this.state.progress > 100){
+            clearInterval(progressBar);
+            this.props.changeGameState('game over');
+          }
           
-          clearInterval(progressBar);
-        }
-        this.setState({
-          progress: (new Date().getTime() - startTime)/8000*100,
-        })
-      }, 1000);
+          this.setState({
+            progress: (new Date().getTime() - startTime)/8000*100,
+          })
+        }, 1000);
+      }
+      this.setState({
+        startedCounter : this.state.startedCounter + 1
+      })
+
     })
 
     socket.on('receive hand', (hand) => {
@@ -47,12 +68,7 @@ class Game extends React.Component {
     });
   }
 
-  componentDidUpdate() {
-    if(this.state.progress>=100){
-      this.props.changeGameState('game over');
-    }
-  }
-
+  //checks if user is winning
   isWinning() {
     const cur = this.state.currentHand;
     const opp = this.state.opponentHand;
@@ -92,6 +108,7 @@ class Game extends React.Component {
     }
   }
 
+  // change page colour based on if user is winning
   pageColor(){
     const win = this.isWinning()
     if(win==='yes'){
@@ -109,8 +126,7 @@ class Game extends React.Component {
         currentHand : hand,
       }
     )
-
-    socket.emit('give hand', hand, this.state.uuid);
+    socket.emit('give hand', this.state.username, hand, this.state.uuid);
   }
 
   render () {
