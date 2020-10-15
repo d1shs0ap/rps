@@ -16,6 +16,9 @@ class GameOver extends React.Component {
 
   componentDidMount(){
     socket.emit('game over', this.state.uuid);
+    socket.on('winner', (winner) => {
+      console.log(winner);
+    })
   }
 
   render() {

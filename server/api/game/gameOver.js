@@ -58,7 +58,8 @@ function calculateWinner(timeStamps, endTime, playerOneName) {
 module.exports = (io, socket) => {
   socket.on('game over', (uuid) => {
     // Calculate the winner
-    const curGame = Game.findOne({ uuid: uuid })
+    const curGame = Game.findOne({ uuid: uuid });
+    console.log(curGame);
     const playerOneWon = calculateWinner(curGame.timestamps, curGame.endTime, curGame.players[0]);
 
     let winner = '';
