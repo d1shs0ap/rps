@@ -14,9 +14,9 @@ module.exports = (io, socket) => {
           const uuid = uuidv4();
           
           //create new game entry in mongodb
-          const newGame = new Game({ uuid: uuid });
+          const newGame = new Game({ uuid: uuid, players: [] });
           newGame.save((err, newGame) => {
-            if (err) return console.error(err);
+            if (err) console.log(err);
             newGame.show();
           })
 

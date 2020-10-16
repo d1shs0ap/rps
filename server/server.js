@@ -6,7 +6,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
 const mongoose = require('mongoose');
-mongoose.connect(`mongodb+srv://d1shs0ap:${process.env.ATLAS_PASSWORD}@main.31ec4.mongodb.net/rps?retryWrites=true&w=majority`, {useNewUrlParser: true})
+mongoose.connect(process.env.ATLAS_CONNECTION_URL, {useNewUrlParser: true})
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -35,4 +35,4 @@ io.on("connection", (socket) => {
   require('./api/game/gameOver')(io, socket)
 });
 
-server.listen(process.env.SOCKET_PORT, () => console.log(`Listening on port 5000`));
+server.listen(process.env.SOCKET_PORT, () => console.log(`Listening on port ${process.env.SOCKET_PORT}`));

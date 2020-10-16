@@ -5,17 +5,15 @@ module.exports = (io, socket) => {
   socket.on('give hand', (player, hand, uuid) => {
     const updateTime = new Date();
 
-    console.log(player)
-
     //add timestamps to mongodb
     const timeStamp = { player: player, hand: hand, time: updateTime };
-    console.log(timeStamp);
-    Game.findOneAndUpdate({ uuid: uuid }, { $push: { timestamps: timeStamp } }, (error, success) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log(success);
-      }
+    Game.findOne({ uuid: uuid }, (err, game) => {
+      if (err) console.log(err);
+      // add time to timestamps list
+      game.timestamps.push(timeStamp);
+      game.save((err) => {
+        if(err) console.log(err);
+      });
     });
 
     //tell the other player about the hand change

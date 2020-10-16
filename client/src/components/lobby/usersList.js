@@ -3,7 +3,7 @@ import { List } from 'antd';
 import ChallengeButton from '..//buttons/challengeButton';
 
 import { withAuth0 } from '@auth0/auth0-react';
-import socket from '../../socket';
+import socket from '../../api/socket';
 
 
 class UsersList extends React.Component {
@@ -26,8 +26,6 @@ class UsersList extends React.Component {
     
     if(isAuthenticated) {
       const curUsername = user['https://matthewyng.com/username'];
-
-      console.log(socket);
 
       socket.emit('user', curUsername);
 

@@ -10,7 +10,7 @@ import rock from './rock.png';
 import paper from './paper.png';
 import scissors from './scissors.png';
 
-import socket from '../../socket';
+import socket from '../../api/socket';
 
 class Game extends React.Component {
   constructor(props){
@@ -39,9 +39,9 @@ class Game extends React.Component {
     // handles the shared starting time for progress bar
     socket.on('readied', (startTime) => {
       if (this.state.startedCounter == 1){
-        console.log(startTime)
+        console.log('Game started at:',startTime)
 
-        socket.emit('confirmed start time', this.state.uuid, startTime);
+        socket.emit('confirmed start time', this.state.uuid, startTime, this.state.username);
 
         const progressBar = setInterval(() => {
           // change scene to page if we're done

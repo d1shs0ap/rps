@@ -50,28 +50,35 @@ function calculateWinner(timeStamps, endTime, playerOneName) {
   }
 
   if (winningTime > losingTime) {
-    return true;
-  } else return false;
+    return 'won';
+  } else if (winningTime < losingTime) {
+    return 'lost'; 
+  }
+  return 'tie';
 
 }
 
 module.exports = (io, socket) => {
   socket.on('game over', (uuid) => {
     // Calculate the winner
-    const curGame = Game.findOne({ uuid: uuid });
-    console.log(curGame);
-    const playerOneWon = calculateWinner(curGame.timestamps, curGame.endTime, curGame.players[0]);
+    Game.findOne({ uuid: uuid }, (err, curGame) => {
+      if (err) console.log(err);
 
-    let winner = '';
-    if(playerOneWon){
-      winner = curGame.players[0];
-    } else{
-      winner = curGame.players[1];
-    }
+      const playerOneWon = calculateWinner(curGame.timestamps, curGame.endTime, curGame.players[0]);
+  
+      let winner = '';
+      if(playerOneWon=='won'){
+        winner = curGame.players[0];
+      } else if (playerOneWon=='lost') {
+        winner = curGame.players[1];
+      } else {
+        winner = 'Tie';
+      }
+  
+      io.in(uuid).emit('winner', winner);
 
-    io.to(uuid).emit('winner', winner);
-
-    // Leave game room
-    socket.leave(uuid);
+      // Leave game room
+      socket.leave(uuid);
+    });
   });
 }

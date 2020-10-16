@@ -1,7 +1,7 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import socket from '../../socket';
+import socket from '../../api/socket';
 
 class StartGame extends React.Component {
   constructor(props) {
