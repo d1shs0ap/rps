@@ -4,15 +4,17 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { Auth0Provider } from "@auth0/auth0-react";
 
+require('dotenv').config()
+
 import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Auth0Provider
-        domain="dev-xts3qmn8.auth0.com"
-        clientId="PjI5KZlLRSqn1grxAk0kUkiWBHx2j3DL"
-        redirectUri="https://realtimerps.com"
+        domain={process.env.AUTH0_DOMAIN}
+        clientId={process.env.AUTH0_CLIENT_ID}
+        redirectUri={process.env.AUTH0_REDIRECT_URI}
       >
         <App />
       </Auth0Provider>
