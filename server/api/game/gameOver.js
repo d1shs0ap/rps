@@ -2,8 +2,8 @@ const Game = require('../../models/game');
 
 function calculateWinner(timeStamps, endTime, playerOneName) {
   let playerOneHand = 'rock';
-  let winningTime = 0;
-  let losingTime = 0;
+  let playerOneWinningTime = 0;
+  let playerOneLosingTime = 0;
   let playerTwoHand = 'rock';
 
   for (let i = 0; i < timeStamps.length; ++i) {
@@ -25,36 +25,31 @@ function calculateWinner(timeStamps, endTime, playerOneName) {
     // check who won in this interval
     if(playerOneHand==='rock') {
       if(playerTwoHand==='paper'){
-        losingTime += timeDiff;
+        playerOneLosingTime += timeDiff;
       }
       else if(playerTwoHand==='scissors'){
-        winningTime += timeDiff;
+        playerOneWinningTime += timeDiff;
       }
     }
     else if(playerOneHand==='paper') {
       if(playerTwoHand==='rock'){
-        winningTime += timeDiff;
+        playerOneWinningTime += timeDiff;
       }
       else if(playerTwoHand==='scissors'){
-        losingTime += timeDiff;
+        playerOneLosingTime += timeDiff;
       }
     }
     else if(playerOneHand==='scissors') {
       if(playerTwoHand==='rock'){
-        losingTime += timeDiff;
+        playerOneLosingTime += timeDiff;
       }
       else if(playerTwoHand==='paper'){
-        winningTime += timeDiff;
+        playerOneWinningTime += timeDiff;
       }
     }
   }
 
-  if (winningTime > losingTime) {
-    return 'won';
-  } else if (winningTime < losingTime) {
-    return 'lost'; 
-  }
-  return 'tie';
+  return [playerOneWinningTime, playerOneLosingTime]
 
 }
 
@@ -64,18 +59,30 @@ module.exports = (io, socket) => {
     Game.findOne({ uuid: uuid }, (err, curGame) => {
       if (err) console.log(err);
 
-      const playerOneWon = calculateWinner(curGame.timestamps, curGame.endTime, curGame.players[0]);
-  
-      let winner = '';
-      if(playerOneWon=='won'){
+      const gameResults = calculateWinner(curGame.timestamps, curGame.endTime, curGame.players[0]);
+      
+      let winner;
+      let winningTime;
+      let losingTime;
+      
+      if(gameResults[0] > gameResults[1]){
         winner = curGame.players[0];
-      } else if (playerOneWon=='lost') {
+
+        winningTime = gameResults[0];
+        losingTime = gameResults[1];
+        
+      } else if (gameResults[0] < gameResults[1]) {
         winner = curGame.players[1];
+
+        winningTime = gameResults[1];
+        losingTime = gameResults[0];
       } else {
         winner = 'Tie';
+        winningTime = gameResults[0];
+        losingTime = gameResults[1];
       }
   
-      io.in(uuid).emit('winner', winner);
+      io.in(uuid).emit('winner', winner, winningTime, losingTime);
 
       // Leave game room
       socket.leave(uuid);

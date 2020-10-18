@@ -14,14 +14,18 @@ class GameOver extends React.Component {
     this.state = {
       uuid: this.props.location.pathname.substring(this.props.location.pathname.lastIndexOf('/') + 1),
       winner: '',
+      secondsWinning: 0,
+      secondsLosing: 0,
     }
   }
 
   componentDidMount(){
     socket.emit('game over', this.state.uuid);
-    socket.on('winner', (winner) => {
+    socket.on('winner', (winner, secondsWinning, secondsLosing) => {
       this.setState({
         winner: winner,
+        secondsWinning: secondsWinning,
+        secondsLosing: secondsLosing
       });
     });
   }
@@ -38,7 +42,10 @@ class GameOver extends React.Component {
 
       <Result
         icon={<TrophyOutlined />}
-        title={`${this.state.winner} Wins!`}
+        title={this.state.winner == 'Tie' ? 'Tie!' : `${this.state.winner} Wins!`}
+        subTitle={`Time winning: ${(this.state.secondsWinning/1000).toFixed(3)}, 
+          Time losing: ${(this.state.secondsLosing/1000).toFixed(3)}, 
+          Time tied: ${(8-(this.state.secondsWinning+this.state.secondsLosing)/1000).toFixed(3)}`}
         extra={<Link to='/'><Button>Back to Lobby</Button></Link>}
       />
     </div>
