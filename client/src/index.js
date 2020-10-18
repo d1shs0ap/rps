@@ -12,7 +12,7 @@ ReactDOM.render(
       <Auth0Provider
         domain="dev-xts3qmn8.auth0.com"
         clientId="PjI5KZlLRSqn1grxAk0kUkiWBHx2j3DL"
-        redirectUri="http://localhost:3000"
+        redirectUri="https://realtimerps.com"
       >
         <App />
       </Auth0Provider>
