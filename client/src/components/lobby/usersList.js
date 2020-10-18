@@ -41,6 +41,7 @@ class UsersList extends React.Component {
     // return (null);
     return <List
       bordered
+      locale={{ emptyText: 'No one\'s here... Ask a friend to log on!' }}
       dataSource={this.state.users}
       renderItem={item => (
         <List.Item>
