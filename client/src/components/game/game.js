@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Progress, Row } from 'antd';
+import { Progress, Row, Card } from 'antd';
 import { withAuth0 } from '@auth0/auth0-react';
 
 import RPSButton from '../buttons/rpsButton';
@@ -112,11 +112,11 @@ class Game extends React.Component {
   pageColor(){
     const win = this.isWinning()
     if(win==='yes'){
-      return { height: '100vh', background: '#96E196' };
+      return { height: '100vmax', background: '#96E196' };
     } else if(win==='no'){
-      return { height: '100vh', background: '#E19696' };
+      return { height: '100vmax', background: '#E19696' };
     } else if (win==='tie'){
-      return { height: '100vh', background: '#E1DB96' };
+      return { height: '100vmax', background: '#E1DB96' };
     }
   }
 
@@ -131,44 +131,52 @@ class Game extends React.Component {
 
   render () {
     return <div style={this.pageColor()}>
-      <Row justify='center' style={{'padding': '60px', 'marginLeft': '70px', 'marginRight':'70px'}}>
+      <Row justify='center' style={{'padding': '7vmin'}}>
         <Progress percent={this.state.progress} showInfo={false}></Progress>
       </Row>
-      <Row justify='center' style={{'padding': '50px'}}>
+      <Row justify='center' style={{'padding': '3vmin'}}>
         <RPSOpponentButton 
           hand='rock' 
           opponentHand={this.state.opponentHand} 
-          image={<img src={rock} height='150px'/>}
+          image={<img src={rock} height='30vmin'/>}
         />
         <RPSOpponentButton 
           hand='paper' 
           opponentHand={this.state.opponentHand} 
-          image={<img src={paper} height='250px'/>}
+          image={<img src={paper} height='50vmin'/>}
         />
         <RPSOpponentButton 
           hand='scissors' 
           opponentHand={this.state.opponentHand} 
-          image={<img src={scissors} height='250px'/>}
+          image={<img src={scissors} height='50vmin'/>}
         />
       </Row>
 
-      <Row justify='center' style={{}}>
-        <RPSButton 
-          hand='rock' 
-          currentHand={this.state.currentHand} 
-          image={<img src={rock} height='150px'/>}
-          handleClick={(hand)=>this.handleClick(hand)}/>
-        <RPSButton 
-          hand='paper' 
-          currentHand={this.state.currentHand} 
-          image={<img src={paper} 
-          height='250px'/>}
-          handleClick={(hand)=>this.handleClick(hand)}/>
-        <RPSButton 
-          hand='scissors' 
-          currentHand={this.state.currentHand} 
-          image={<img src={scissors} height='250px'/>}
-          handleClick={(hand)=>this.handleClick(hand)}/>
+      <Row justify='center' style={{'padding': '10vmin'}}>
+        <Card bordered={false}>
+          <Card.Grid>            
+            <RPSButton 
+              hand='rock' 
+              currentHand={this.state.currentHand} 
+              image={<img src={rock} height='30vmin'/>}
+              handleClick={(hand)=>this.handleClick(hand)}/>
+          </Card.Grid>
+          <Card.Grid>
+            <RPSButton 
+              hand='paper' 
+              currentHand={this.state.currentHand} 
+              image={<img src={paper} 
+              height='50vmin'/>}
+              handleClick={(hand)=>this.handleClick(hand)}/>
+          </Card.Grid>
+          <Card.Grid>
+            <RPSButton 
+              hand='scissors' 
+              currentHand={this.state.currentHand} 
+              image={<img src={scissors} height='50vmin'/>}
+              handleClick={(hand)=>this.handleClick(hand)}/>
+          </Card.Grid>
+        </Card>
       </Row>
     </div>;
   }

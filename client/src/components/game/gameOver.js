@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-
 import { Link } from 'react-router-dom';
+
+import { withAuth0 } from '@auth0/auth0-react';
 
 import { Result, Button } from 'antd';
 import { TrophyOutlined } from '@ant-design/icons';
@@ -16,17 +17,43 @@ class GameOver extends React.Component {
       winner: '',
       secondsWinning: 0,
       secondsLosing: 0,
+      username: '',
+      resultMessage: '',
     }
   }
 
   componentDidMount(){
+    const { user, isAuthenticated } = this.props.auth0;
+    if(isAuthenticated){
+      const username = user['https://matthewyng.com/username'];
+      this.setState({
+        username: username,
+      })
+    }
     socket.emit('game over', this.state.uuid);
     socket.on('winner', (winner, secondsWinning, secondsLosing) => {
       this.setState({
         winner: winner,
-        secondsWinning: secondsWinning,
-        secondsLosing: secondsLosing
       });
+      if (this.state.winner == 'Tie'){
+        this.setState({
+          secondsWinning: secondsWinning,
+          secondsLosing: secondsLosing,
+          resultMessage: 'Tie!',
+        });
+      } else if (this.state.winner === this.state.username){
+        this.setState({
+          secondsWinning: secondsWinning,
+          secondsLosing: secondsLosing,
+          resultMessage: 'You win!'
+        });
+      } else {
+        this.setState({
+          secondsWinning: secondsLosing,
+          secondsLosing: secondsWinning,
+          resultMessage: 'Rip... (You lose)'
+        });
+      }
     });
   }
 
@@ -42,10 +69,10 @@ class GameOver extends React.Component {
 
       <Result
         icon={<TrophyOutlined />}
-        title={this.state.winner == 'Tie' ? 'Tie!' : `${this.state.winner} Wins!`}
-        subTitle={`Time winning: ${(this.state.secondsWinning/1000).toFixed(3)}, 
-          Time losing: ${(this.state.secondsLosing/1000).toFixed(3)}, 
-          Time tied: ${(8-(this.state.secondsWinning+this.state.secondsLosing)/1000).toFixed(3)}`}
+        title={this.state.resultMessage}
+        subTitle={`Out of the 8 seconds, you were winning ${(this.state.secondsWinning/1000).toFixed(3)}s, 
+          losing ${(this.state.secondsLosing/1000).toFixed(3)}s, 
+          tied ${(8-(this.state.secondsWinning+this.state.secondsLosing)/1000).toFixed(3)}s.`}
         extra={<Link to='/'><Button>Back to Lobby</Button></Link>}
       />
     </div>
@@ -53,4 +80,4 @@ class GameOver extends React.Component {
 
 }
 
-export default withRouter(GameOver);
+export default withRouter(withAuth0(GameOver));

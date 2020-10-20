@@ -7,7 +7,7 @@ class RPSButton extends React.Component {
   }
   render() {
     return <Button 
-      style={this.props.currentHand===this.props.hand ? {backgroundColor: '#188fff', 'height': '300px', 'width': '300px', 'border': 'none'}: {'height': '300px', 'width': '300px', 'border': 'none'}}
+      style={this.props.currentHand===this.props.hand ? {backgroundColor: '#70BAFF', 'height': '20vmin', 'width': '20vmin', 'border': 'none'}: {'height': '20vmin', 'width': '20vmin', 'border': 'none'}}
       onClick={()=>this.props.handleClick(this.props.hand)}
       >
       {this.props.image}

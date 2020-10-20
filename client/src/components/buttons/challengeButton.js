@@ -1,7 +1,7 @@
 import React from 'react';
 import { withAuth0 } from '@auth0/auth0-react';
 
-import { Button } from 'antd';
+import { Button, notification } from 'antd';
 import socket from '../../api/socket';
 
 class ChallengeButton extends React.Component {
@@ -16,7 +16,10 @@ class ChallengeButton extends React.Component {
     const curUsername = user['https://matthewyng.com/username'];
 
     socket.emit('challenge', this.props.username, curUsername);
-    console.log('Challenged', this.props.username);
+
+    notification.open({
+      message: `Challenged ${this.props.username}!`,
+    });
   }
 
   render() {

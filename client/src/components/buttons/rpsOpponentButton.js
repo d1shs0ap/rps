@@ -7,7 +7,7 @@ class RPSOpponentButton extends React.Component {
   }
   render() {
     return <Button 
-      disabled style={this.props.opponentHand===this.props.hand ? {backgroundColor: '#1864AF', 'height': '300px', 'width': '300px', 'border': 'none'}: {'height': '300px', 'width': '300px', 'border': 'none'}}
+      disabled style={this.props.opponentHand===this.props.hand ? {backgroundColor: '#1360AC', 'height': '20vmin', 'width': '20vmin', 'border': 'none'}: {'height': '20vmin', 'width': '20vmin', 'border': 'none'}}
       >
       {this.props.image}
     </Button>;
